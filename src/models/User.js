@@ -11,7 +11,7 @@ const userSchema = mongoose.Schema({
         lowercase: true,
         validate: value => {
             if (!validator.isEmail(value)) {
-                throw new Error({error: 'Invalid Email address'})
+                throw new Error({ error: 'Invalid Email address' })
             }
         }
     },
@@ -43,21 +43,21 @@ userSchema.pre('save', async function (next) {
     next()
 })
 
-userSchema.methods.generateAuthToken = async function() {
+userSchema.methods.generateAuthToken = async function () {
     // Generate an auth token for the user
     const user = this
-    const token = jwt.sign({_id: user._id}, process.env.JWT_KEY)
-    user.tokens = user.tokens.concat({token})
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_KEY)
+    user.tokens = user.tokens.concat({ token })
     await user.save()
     return token
 }
 
-userSchema.methods.generateWatchList = async function() {
+userSchema.methods.generateWatchList = async function () {
     const user = this
     return user.watchlist
 }
 
-userSchema.methods.updateWatchList = async function(ticker) {
+userSchema.methods.updateWatchList = async function (ticker) {
     // Add or remove ticker to user's watchlist
     const user = this
     let index = -1
@@ -67,12 +67,12 @@ userSchema.methods.updateWatchList = async function(ticker) {
         }
     });
     //If it exists in the watchlist remove it
-    if (index > -1){
+    if (index > -1) {
         user.watchlist.splice(index, 1);
     }
     //If not add it
-    else{
-        user.watchlist = user.watchlist.concat({symbol: ticker})
+    else {
+        user.watchlist = user.watchlist.concat({ symbol: ticker })
     }
     //Save the user
     await user.save()
@@ -81,13 +81,13 @@ userSchema.methods.updateWatchList = async function(ticker) {
 
 userSchema.statics.findByCredentials = async (email, password) => {
     // Search for a user by email and password.
-    const user = await User.findOne({ email } )
+    const user = await User.findOne({ email })
     if (!user) {
-        throw new Error('There is no account registered with this email!')
+        throw new Error('Bad email!')
     }
     const isPasswordMatch = await bcrypt.compare(password, user.password)
     if (!isPasswordMatch) {
-        throw new Error('Invalid password')
+        throw new Error('Bad password!')
     }
     return user
 }
