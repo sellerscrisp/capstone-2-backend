@@ -1,4 +1,4 @@
-# StockList Login-Watchlist API Server
+# StockWatcher Login API Server
 Developed in Express Node.js framework, utilizing a MongoDB database.
 
 ## Features
